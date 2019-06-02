@@ -1,0 +1,369 @@
+version: "2"
+services:
+  graphql_weblayer:
+    build:
+      context: ./graphql_weblayer
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/graphql_weblayer/'
+    container_name: graphql_weblayer
+    ports:
+    - 8000:8080
+    links:
+    - usermanager
+    - cosmos
+    - medchallenz
+    - medpixx
+    - infomed
+    - clap
+    - zhuhai
+    - fileserver
+    - subscriptions
+    - television
+    - notes
+
+  #############################################################################
+
+  weblayer:
+    build:
+      context: ./weblayer
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/weblayer/'
+    container_name: weblayer
+    ports:
+    - 8080:8080
+    links:
+    - usermanager
+    - fileserver
+    - medchallenz
+    - cosmos
+    - infomed
+    - medpixx
+    - television
+    - notes
+
+  #############################################################################
+
+  usermanager:
+    build:
+      context: ./user_manager
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/user_manager/'
+    container_name: usermanager
+    links:
+    - mongo_user_manager
+    - redis
+
+  mongo_user_manager:
+    container_name: mongo_user_manager
+    image: mongo
+    volumes:
+      - '/mnt/mongo_store/usermanager:/data/db'
+    expose:
+    - 27017
+
+  redis:
+    container_name: redis
+    image: redis
+    expose:
+    - 6379
+
+  #############################################################################
+
+  cosmos:
+    build:
+      context: ./cosmos
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/cosmos/'
+    container_name: cosmos
+    links:
+    - mongo_cosmos
+
+  mongo_cosmos:
+    container_name: mongo_cosmos
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/cosmos:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  notes:
+    build:
+      context: ./notes
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/notes/'
+    container_name: notes
+    links:
+    - mongo_notes
+
+  mongo_notes:
+    container_name: mongo_notes
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/notes:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  coordinates:
+    build:
+      context: ./coordinates
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/coordinates/'
+    container_name: coordinates
+    links:
+    - mongo_coordinates
+
+  mongo_coordinates:
+    container_name: mongo_coordinates
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/coordinates:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  television:
+    build:
+      context: ./television
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/television/'
+    container_name: television
+    links:
+    - mongo_television
+
+  mongo_television:
+    container_name: mongo_television
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/television:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  medchallenz:
+    build:
+      context: ./medchallenz
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/medchallenz/'
+    container_name: medchallenz
+    links:
+    - mongo_medchallenz
+
+  mongo_medchallenz:
+    container_name: mongo_medchallenz
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/medchallenz:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  medpixx:
+    build:
+      context: ./medpixx
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/medpixx/'
+    container_name: medpixx
+    links:
+    - mongo_medpixx
+
+  mongo_medpixx:
+    container_name: mongo_medpixx
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/medpixx:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  infomed:
+    build:
+      context: ./infomed
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/infomed/'
+    container_name: infomed
+    links:
+    - mongo_infomed
+
+  mongo_infomed:
+    container_name: mongo_infomed
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/infomed:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  fileserver:
+    build:
+      context: ./fileserver
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/fileserver/'
+    container_name: infomed
+    links:
+    - mongo_fileserver
+
+  mongo_fileserver:
+    container_name: mongo_filerserver
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/fileserver:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  clap:
+    build:
+      context: ./clap
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/clap/'
+    container_name: clap
+    links:
+    - mongo_clap
+
+  mongo_clap:
+    container_name: mongo_clap
+    image: mongo
+    volumes:
+    - '/mnt/mongo_store/clap:/data/db'
+    command: "--smallfiles --logpath=/dev/null --setParameter failIndexKeyTooLong=false"
+    expose:
+    - 27017
+
+  #############################################################################
+
+  zhuhai:
+    build:
+      context: ./zhuhai
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/zhuhai/'
+    container_name: zhuhai
+    links:
+    - broker
+
+  #############################################################################
+
+  eater:
+    build:
+      context: ./eater
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+    - '.:/go/src/github.com/medcampus/eater/'
+    container_name: eater
+    links:
+    - broker
+    - medchallenz
+
+  #############################################################################
+
+  mcpayments:
+    build:
+      context: ./mcpayments
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - '.:/go/src/github.com/medcampus/mcpayments/'
+    container_name: mcpayments
+    links:
+    - mongo_mc_payments
+
+  mongo_mc_payments:
+    container_name: mongo_mc_payments
+    image: mongo
+    volumes:
+      - '/mnt/mongo_store/mcpayments:/data/db'
+    expose:
+    - 27017
+
+  #############################################################################
+
+  subscriptions:
+    build:
+      context: ./subscriptions
+      dockerfile: Dockerfile
+    restart: always
+    container_name: subscriptions
+    volumes:
+      - '.:/go/src/github.com/medcampus/subscription/'
+    links:
+      - mcpayments
+
+  #############################################################################
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.2.1
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+    - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-enterprise-kafka:5.2.1
+    hostname: broker
+    container_name: broker
+    depends_on:
+    - zookeeper
+    ports:
+    - "29092:29092"
+    - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:29092
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper:2181
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+
