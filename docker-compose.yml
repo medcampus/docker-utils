@@ -236,12 +236,12 @@ services:
     restart: always
     volumes:
     - '.:/go/src/github.com/medcampus/fileserver/'
-    container_name: infomed
+    container_name: fileserver
     links:
-    - mongo_fileserver
+    - mongo_file_server
 
-  mongo_fileserver:
-    container_name: mongo_filerserver
+  mongo_file_server:
+    container_name: mongo_file_server
     image: mongo
     volumes:
     - '/mnt/mongo_store/fileserver:/data/db'
@@ -328,9 +328,36 @@ services:
     restart: always
     container_name: subscriptions
     volumes:
-      - '.:/go/src/github.com/medcampus/subscription/'
+      - '.:/go/src/github.com/medcampus/subscriptions/'
     links:
       - mcpayments
+      - mongo_subscriptions
+
+  mongo_subscriptions:
+    container_name: mongo_subscriptions
+    image: mongo
+    expose:
+      - 27017
+
+  #############################################################################
+
+  investigations:
+    build:
+      context: ./investigations
+      dockerfile: Dockerfile
+    restart: always
+    container_name: investigations
+    volumes:
+    - '.:/go/src/github.com/medcampus/investigations/'
+    links:
+    - mongo_investigations
+    - cosmos
+
+  mongo_investigations:
+    container_name: mongo_investigations
+    image: mongo
+    expose:
+    - 27017
 
   #############################################################################
 
