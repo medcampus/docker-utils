@@ -22,6 +22,7 @@ services:
     - subscriptions
     - television
     - notes
+    - toppers
 
   #############################################################################
 
@@ -355,6 +356,25 @@ services:
 
   mongo_investigations:
     container_name: mongo_investigations
+    image: mongo
+    expose:
+    - 27017
+
+  #############################################################################
+
+  toppers:
+    build:
+      context: ./toppers
+      dockerfile: Dockerfile
+    restart: always
+    container_name: toppers
+    volumes:
+    - '.:/go/src/github.com/medcampus/toppers/'
+    links:
+    - mongo_toppers
+
+  mongo_toppers:
+    container_name: mongo_toppers
     image: mongo
     expose:
     - 27017
