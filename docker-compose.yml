@@ -23,6 +23,7 @@ services:
     - television
     - notes
     - toppers
+    - ribbons
 
   #############################################################################
 
@@ -376,6 +377,25 @@ services:
 
   mongo_toppers:
     container_name: mongo_toppers
+    image: mongo
+    expose:
+    - 27017
+
+  #############################################################################
+
+  ribbons:
+    build:
+      context: ./ribbons
+      dockerfile: Dockerfile
+    restart: always
+    container_name: ribbons
+    volumes:
+    - '.:/go/src/github.com/medcampus/ribbons/'
+    links:
+    - mongo_ribbons
+
+  mongo_ribbons:
+    container_name: mongo_ribbons
     image: mongo
     expose:
     - 27017
