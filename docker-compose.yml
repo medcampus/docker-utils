@@ -60,6 +60,8 @@ services:
     links:
     - mongo_user_manager
     - redis
+    - communications
+    - subscriptions
 
   mongo_user_manager:
     container_name: mongo_user_manager
@@ -399,6 +401,17 @@ services:
     image: mongo
     expose:
     - 27017
+
+  #############################################################################
+
+  communications:
+    build:
+      context: ./communications
+      dockerfile: Dockerfile
+    restart: always
+    container_name: communications
+    volumes:
+    - '.:/go/src/github.com/medcampus/communications/'
 
   #############################################################################
 
